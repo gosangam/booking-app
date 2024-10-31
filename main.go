@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"strings"
 )
 
 func main() {
@@ -53,6 +54,12 @@ func main() {
 		fmt.Printf("Enter number of tickets: \n")
 		fmt.Scan(&userTickets)
 
+		if (userTickets > remainingTickets) || (userTickets == 0) {
+			fmt.Printf("We only have %v tickets remaining\n", remainingTickets)
+			fmt.Printf("Please try again\n")
+			continue // continue will skip the rest of the code and restart the loop
+		}
+
 		remainingTickets = remainingTickets - userTickets
 
 		// This is the normal way of assigning values to an array
@@ -69,7 +76,12 @@ func main() {
 		fmt.Printf("Received bookings from %v people till now\n", len(bookings)) // len is used to get the length of an array
 
 		for i, name := range bookings {
-			fmt.Printf("Booking %d: %s\n", i, name)
+			fmt.Printf("Booking %d: %s\n", i, strings.Fields(name)[0])
+		}
+
+		if remainingTickets == 0 {
+			fmt.Printf("All tickets have been booked. Come back next year")
+			break // break will exit the loop
 		}
 	}
 
