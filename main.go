@@ -12,13 +12,15 @@ func main() {
 
 	// Arrays can also have some initial values
 	// var bookings = [50]string{"Sangam Kumar", "Rishi"}
+	// Unlike JavaScript, Golang's array elements can only be of one data type
 
+	// Arrays without predefined size are known as slices
 	// Slices follow the same syntax for values assignment
 	// var bookings = []string{"Sangam Kumar", "Rishi"}
 
 	// It's better to use Slices than using Arrays
 	// because Arrays have a fixed size
-	// and Slices can grow and shrink
+	// and Slices can grow and shrink as per requirements
 	var bookings []string
 
 	// Variable declaration
@@ -43,7 +45,9 @@ func main() {
 		var userTickets uint
 
 		fmt.Printf("Enter your first name: \n")
-		fmt.Scan(&firstName) // Scan can be used to accept inputs
+
+		// Scan can be used to accept inputs
+		fmt.Scan(&firstName)
 
 		fmt.Printf("Enter your last name: \n")
 		fmt.Scan(&lastName)
@@ -54,10 +58,10 @@ func main() {
 		fmt.Printf("Enter number of tickets: \n")
 		fmt.Scan(&userTickets)
 
-		if (userTickets > remainingTickets) || (userTickets == 0) {
-			fmt.Printf("We only have %v tickets remaining\n", remainingTickets)
-			fmt.Printf("Please try again\n")
-			continue // continue will skip the rest of the code and restart the loop
+		isValid :=
+			validateUserInputs(firstName, lastName, email, int(userTickets), int(remainingTickets))
+		if !isValid {
+			continue
 		}
 
 		remainingTickets = remainingTickets - userTickets
@@ -75,8 +79,9 @@ func main() {
 		fmt.Printf("%v tickets left\n", remainingTickets)
 		fmt.Printf("Received bookings from %v people till now\n", len(bookings)) // len is used to get the length of an array
 
-		for i, name := range bookings {
-			fmt.Printf("Booking %d: %s\n", i, strings.Fields(name)[0])
+		firstNames := extractFirstNames(bookings)
+		for _, name := range firstNames {
+			fmt.Println(name)
 		}
 
 		if remainingTickets == 0 {
@@ -85,4 +90,36 @@ func main() {
 		}
 	}
 
+}
+
+func extractFirstNames(bookings []string) []string {
+	firstNames := []string{}
+	for _, name := range bookings {
+		// fmt.Printf("Booking %d: %s\n", i, strings.Fields(name)[0])
+		firstNames = append(firstNames, strings.Fields(name)[0])
+	}
+
+	return firstNames
+}
+
+func validateUserInputs(firstName string, lastName string, email string, userTickets int, remainingTickets int) bool {
+	isValidName := len(firstName) >= 2 && len(lastName) >= 2
+	isValidEmail := strings.Contains(email, "@")
+	isValidTicketNumber := userTickets > 0 && userTickets <= remainingTickets
+
+	areAllValuesValid := isValidEmail && isValidName && isValidTicketNumber
+
+	if !areAllValuesValid {
+		fmt.Println("")
+		if !isValidEmail {
+			fmt.Println("Email address does not seem to be valid!!!!")
+		} else if !isValidName {
+			fmt.Println("First name or last name is too short!!!!")
+		} else if !isValidTicketNumber {
+			fmt.Printf("Please enter valid ticket numbers! Tickets left %v \n", remainingTickets)
+		}
+		fmt.Println("")
+	}
+
+	return areAllValuesValid
 }
